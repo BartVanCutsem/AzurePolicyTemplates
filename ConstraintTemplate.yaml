@@ -12,10 +12,9 @@ spec:
       rego: |
         package k8sazurev1podenforcelabels
 
-        violation[{"msg": msg, "details": {"missing_labels": missing}}] {
-          required := {label | label := input.parameters.labels[_]}
-          provided := {label | input.review.object.metadata.labels[label]}
-          missing := required - provided
-          count(missing) > 0
-          msg := sprintf("you must provide labels: %v", [missing])
+        violation [{"msg": msg, "details": {"missing_labels": [key, value]}}] {
+          value := input.request.object.metadata.labels.env
+          key := "infradev"
+          contains(value, key)
+          msg := sprintf("Values to check:  %v -> %v", [key, value])
         }
