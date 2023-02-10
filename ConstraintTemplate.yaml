@@ -20,9 +20,13 @@ spec:
       rego: |
         package k8sazurev1podenforcelabelvalues
 
-        violation[{ "msg": msg }] {
-          # The `not` keyword turns an undefined statement into a true statement. If any
-          # of the keys are missing, this statement will be true.
+        violation[{"msg": msg}] {
           not input.metadata.labels.env
-          msg := "Every resource must have a costcenter label"
+          msg := "Every resource must have a env label"
+        }
+
+        violation[{"msg": msg}] {
+          value := input.request.object.metadata.labels.env
+          not startswith(value, "cccode-")
+          msg := sprintf("Costcenter env must start with `cccode-`; found `%v`", [value])
         }
