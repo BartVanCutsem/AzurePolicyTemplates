@@ -21,7 +21,7 @@ spec:
         package k8sazurev1podenforcelabelvalues
 
         violation[{"msg": msg}] {
-          not input.metadata.labels.env
+          not input.request.object.metadata.labels.env
           msg := "Every resource must have a env label"
         }
 

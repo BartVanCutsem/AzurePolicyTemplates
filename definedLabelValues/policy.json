@@ -114,12 +114,13 @@
           "details": {
             "templateInfo": {
               "sourceType": "PublicURL",
-              "url": "https://raw.githubusercontent.com/BartVanCutsem/AzurePolicyTemplates/main/ConstraintTemplate.yaml"
+              "url": "https://raw.githubusercontent.com/BartVanCutsem/AzurePolicyTemplates/main/definedLabelValues/ConstraintTemplate.yaml"
             },
             "apiGroups": [
               ""
             ],
-            "kinds": "[parameters('includedResourceTypes')]", 
+            // "kinds": "[parameters('includedResourceTypes')]", 
+            "kinds": ["pod"], 
             "namespaces": "[parameters('namespaces')]",
             "labelSelector": "[parameters('labelSelector')]"
           }
