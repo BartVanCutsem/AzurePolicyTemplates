@@ -1,0 +1,32 @@
+apiVersion: templates.gatekeeper.sh/v1beta1
+kind: ConstraintTemplate
+metadata:
+  name: k8sazurev1podenforcelabelvalues
+spec:
+  crd:
+    spec:
+      names:
+        kind: K8sAzureV1PodEnforceLabelvalues
+      validation:
+        # Schema for the `parameters` field
+        openAPIV3Schema:
+          properties:
+            labels:
+              type: array
+              items:
+                type: string
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package k8sazurev1podenforcelabelvalues
+
+        violation[{"msg": msg}] {
+          not input.metadata.labels.env
+          msg := "Every resource must have a env label"
+        }
+
+        violation[{"msg": msg}] {
+          value := input.request.object.metadata.labels.env
+          not startswith(value, "cccode-")
+          msg := sprintf("Costcenter env must start with `cccode-`; found `%v`", [value])
+        }
