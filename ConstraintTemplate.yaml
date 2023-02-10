@@ -20,7 +20,7 @@ spec:
       rego: |
         package k8sazurev1podenforcelabelvalues
 
-        deny contains msg if {
+        violation[{ "msg": msg }] {
           # The `not` keyword turns an undefined statement into a true statement. If any
           # of the keys are missing, this statement will be true.
           not input.metadata.labels.env
