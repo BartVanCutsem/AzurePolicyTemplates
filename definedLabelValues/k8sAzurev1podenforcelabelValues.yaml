@@ -1,0 +1,14 @@
+---
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sAzureV1PodEnforceLabelvalues
+metadata:
+  name: enforce-pod-label-values
+spec:
+  match:
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"]
+  parameters: 
+    labels: ["team", "env"]
+    required_labels_env: "infradev"
+    required_labels_team: ["team1", "team2"]

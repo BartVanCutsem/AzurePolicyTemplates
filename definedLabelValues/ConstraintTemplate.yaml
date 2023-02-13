@@ -20,13 +20,32 @@ spec:
       rego: |
         package k8sazurev1podenforcelabelvalues
 
-        violation[{"msg": msg}] {
-          not input.request.object.metadata.labels.env
-          msg := "Every resource must have a env label"
+        # Checks if `labels`  has an  
+        contains(labels, elem) {
+          labels[_] = elem
         }
 
+        violation[{"msg": msg, "details": {"missing_labels": missing}}] {
+          required := {label | label := input.parameters.labels[_]}
+          provided := {label | input.review.object.metadata.labels[label]}
+          missing := required - provided
+          count(missing) > 0
+          msg := sprintf("you must provide labels: %v", [missing])
+        }
+
+        ### ENV Label values
         violation[{"msg": msg}] {
-          value := input.request.object.metadata.labels.env
-          not startswith(value, "cccode-")
-          msg := sprintf("Costcenter env must start with `cccode-`; found `%v`", [value])
+          required := input.parameters.requiredLabelValuesEnv
+          provided := input.review.object.metadata.labels.env
+          not contains(required, provided)
+          msg := sprintf("Env label required one of the following labels. The current label `%v` has to be one of the following values;  %v",  [provided, required])
+        }
+
+
+        ### Team Label values 
+        violation[{"msg": msg}] {
+          required := input.parameters.requiredLabelValuesTeam
+          provided := input.review.object.metadata.labels.team
+          not contains(required, provided)
+          msg := sprintf("Team label required one of the following labels. The current label `%v` has to be one of the following values;  %v",  [provided , required])
         }
